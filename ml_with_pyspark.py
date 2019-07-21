@@ -78,12 +78,11 @@ FP = prediction.filter('prediction = 1 AND label != prediction').count()
 accuracy = (TN + TP) / (TN + TP + FN + FP)
 print(accuracy)
 '''
-see the accuracy and also the confusion matrix. Confusion matrix can be very helpful on finding how the model is doing
-and how well it predicts false positive and false negative. Accuracy can be bias if there imbalanced dataset, 
+Its good to check accuracy and also the confusion matrix. Confusion matrix can be very helpful on finding how the model is doing
+and how well it predicts false positive and false negative. Accuracy can be bias if there is imbalanced dataset, 
 Confusion  matrix is very helpful on such situations. 
 '''
 # do cross validation for this model
-
 params = (ParamGridBuilder()
              .addGrid(gbt.maxDepth, [2, 4])
              .addGrid(gbt.maxBins, [10, 20])
@@ -93,14 +92,14 @@ params = (ParamGridBuilder()
 evaluator = BinaryClassificationEvaluator(labelCol='label')
 
 cv = CrossValidator(estimator=pipeline, estimatorParamMaps= params, evaluator= evaluator, numFolds=5)
-
 cvmodel = cv.fit(x_train)
-
 best_model = cvmodel.bestModel
 
 print(evaluator.evaluate(best_model.transform(x_test)))
 
 '''
-We can also get other number of features like best params using best_model.stages[3].extractParamMap(). Here [3] means
-the stages which is at index 3 , i.e our classification algorithms. 
+We can also get other number of features like best params from our best model from cross validation.
+In our cross validation we can use best_model.stages[3].extractParamMap() to get the best params. Here [3] means
+the stages from our pipeline model which is at index 3. In Index3, our pipeline model has our classification
+algorithm. 
 '''
